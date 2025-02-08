@@ -1,16 +1,19 @@
-ifneq ($(or $(CONFIG_ARCH_SDM450),$(CONFIG_ARCH_MSM8953)),y)
 # auto-detect subdirs
 ifeq ($(CONFIG_ARCH_SDM845), y)
 include $(srctree)/techpack/audio/config/sdm845auto.conf
-export $(shell sed 's/=.*//' $(srctree)/techpack/audio/config/sdm845auto.conf)
+export
+endif
+ifeq ($(CONFIG_ARCH_MSM8953), y)
+include $(srctree)/techpack/audio/config/sdm450auto.conf
+export
 endif
 ifeq ($(CONFIG_ARCH_SDM670), y)
-include $(srctree)/techpack/audio/config/sdm670auto.conf
-export $(shell sed 's/=.*//' $(srctree)/techpack/audio/config/sdm670auto.conf)
+include $(srctree)/techpack/audio/config/sdm710auto_static.conf
+export
 endif
 ifeq ($(CONFIG_ARCH_SDXPOORWILLS), y)
 include $(srctree)/techpack/audio/config/sdxpoorwillsauto.conf
-export $(shell sed 's/=.*//' $(srctree)/techpack/audio/config/sdxpoorwillsauto.conf)
+export
 endif
 
 # Use USERINCLUDE when you must reference the UAPI directories only.
@@ -27,9 +30,13 @@ ifeq ($(CONFIG_ARCH_SDM845), y)
 LINUXINCLUDE    += \
                 -include $(srctree)/techpack/audio/config/sdm845autoconf.h
 endif
+ifeq ($(CONFIG_ARCH_MSM8953), y)
+LINUXINCLUDE    += \
+                -include $(srctree)/techpack/audio/config/sdm450autoconf.h
+endif
 ifeq ($(CONFIG_ARCH_SDM670), y)
 LINUXINCLUDE    += \
-                -include $(srctree)/techpack/audio/config/sdm670autoconf.h
+                -include $(srctree)/techpack/audio/config/sdm710autoconf.h
 endif
 ifeq ($(CONFIG_ARCH_SDXPOORWILLS), y)
 LINUXINCLUDE    += \
@@ -40,6 +47,3 @@ obj-y += asoc/
 obj-y += dsp/
 obj-y += ipc/
 obj-y += soc/
-else
-obj-y += titanium/
-endif

@@ -78,4 +78,4 @@
 	};
 };
 
-#include "xiaomi/vince.dtsi"
+#include "vince/vince-overlay.dtsi"

@@ -1,4 +1,4 @@
-/* Copyright (c) 2014-2018, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2014-2017, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -140,7 +140,7 @@ do {                                                    \
 #define OCP_ATTEMPT 20
 #define HS_DETECT_PLUG_TIME_MS (3 * 1000)
 #define SPECIAL_HS_DETECT_TIME_MS (2 * 1000)
-#define MBHC_BUTTON_PRESS_THRESHOLD_MIN 250
+#define MBHC_BUTTON_PRESS_THRESHOLD_MIN 750
 #define GND_MIC_SWAP_THRESHOLD 4
 #define GND_MIC_USBC_SWAP_THRESHOLD 2
 #define WCD_FAKE_REMOVAL_MIN_PERIOD_MS 100
@@ -149,8 +149,9 @@ do {                                                    \
 #define FW_READ_TIMEOUT 4000000
 #define FAKE_REM_RETRY_ATTEMPTS 3
 #define MAX_IMPED 60000
+#define CAM_HS_IMPED 45000
 
-#define WCD_MBHC_BTN_PRESS_COMPL_TIMEOUT_MS  50
+#define WCD_MBHC_BTN_PRESS_COMPL_TIMEOUT_MS  200
 #define ANC_DETECT_RETRY_CNT 7
 #define WCD_MBHC_SPL_HS_CNT  1
 
@@ -189,7 +190,6 @@ enum wcd_mbhc_register_function {
 	WCD_MBHC_BTN_DBNC,
 	WCD_MBHC_HS_VREF,
 	WCD_MBHC_HS_COMP_RESULT,
-	WCD_MBHC_IN2P_CLAMP_STATE,
 	WCD_MBHC_MIC_SCHMT_RESULT,
 	WCD_MBHC_HPHL_SCHMT_RESULT,
 	WCD_MBHC_HPHR_SCHMT_RESULT,
@@ -526,7 +526,6 @@ struct wcd_mbhc {
 	bool gnd_swh; /*track GND switch NC / NO */
 	u32 hs_thr;
 	u32 hph_thr;
-	u32 micb_mv;
 	u32 swap_thr;
 	u32 moist_vref;
 	u32 moist_iref;
