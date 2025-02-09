@@ -1103,7 +1103,25 @@ config SND_SOC_TFA98XX
 	help
 	Enables support for NXP98xx Smart PA.
 
-# TAS2557
-source "sound/soc/codecs/tas2557/Kconfig"
+config SND_SOC_MAX98927
+	tristate "Audio SMART PA 98927 support"
+	help
+	  Say Y here to enable Audio SMART PA support. This allows
+	  monitoring switches by userspace via sysfs and uevent.
+
+menuconfig SND_SOC_TAS2557
+	tristate "Texas Instruments TAS2557 SmartAmp(R)"
+
+if SND_SOC_TAS2557
+config TAS2557_REGMAP
+	bool "Use of RegMap API"
+
+config TAS2557_CODEC
+	bool "Codec Driver support"
+
+config TAS2557_MISC
+	bool "Misc Driver support"
+
+endif
 
 endmenu

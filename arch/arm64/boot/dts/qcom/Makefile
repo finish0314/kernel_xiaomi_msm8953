@@ -1,6 +1,8 @@
-#dtb-$(CONFIG_ARCH_QCOM)	+= apq8016-sbc.dtb msm8916-mtp.dtb
-#dtb-$(CONFIG_ARCH_QCOM)	+= msm8996-mtp.dtb
-#dtb-$(CONFIG_ARCH_QCOM)	+= apq8096-db820c.dtb
+ifneq ($(CONFIG_MACH_XIAOMI_MSM8953),y)
+dtb-$(CONFIG_ARCH_QCOM)	+= apq8016-sbc.dtb msm8916-mtp.dtb
+dtb-$(CONFIG_ARCH_QCOM)	+= msm8996-mtp.dtb
+dtb-$(CONFIG_ARCH_QCOM)	+= apq8096-db820c.dtb
+endif
 
 ifeq ($(CONFIG_BUILD_ARM64_DT_OVERLAY),y)
 	dtbo-$(CONFIG_ARCH_SDM845) += \
@@ -530,7 +532,47 @@ sda429-bg-dvt2-wtp-overlay.dtbo-base := sda429-bg-dvt2-wtp.dtb
 sdm429-bg-wdp-overlay.dtbo-base := sdm429-bg-wdp.dtb
 sda429-bg-wdp-overlay.dtbo-base := sda429-bg-wdp.dtb
 else
+ifeq ($(CONFIG_MACH_XIAOMI_MSM8953),y)
+dtb-$(CONFIG_MACH_XIAOMI_DAISY) += msm8953-qrd-sku3-daisy.dtb
+dtb-$(CONFIG_MACH_XIAOMI_MIDO) += msm8953-qrd-sku3-mido.dtb
+dtb-$(CONFIG_MACH_XIAOMI_SAKURA) += msm8953-qrd-sku3-sakura.dtb
+dtb-$(CONFIG_MACH_XIAOMI_TISSOT) += msm8953-qrd-sku3-tissot.dtb
 dtb-$(CONFIG_MACH_XIAOMI_VINCE) += msm8953-qrd-sku3-vince.dtb
+dtb-$(CONFIG_MACH_XIAOMI_YSL) += msm8953-pmi8940-mtp-ysl.dtb
+else
+dtb-$(CONFIG_ARCH_MSM8953) += msm8953-cdp.dtb \
+	msm8953-mtp.dtb \
+	msm8953-ext-codec-mtp.dtb \
+	msm8953-qrd-sku3.dtb \
+	msm8953-rcm.dtb \
+	apq8053-rcm.dtb \
+	msm8953-ext-codec-rcm.dtb \
+	apq8053-cdp.dtb \
+	apq8053-ipc.dtb \
+	msm8953-ipc.dtb \
+	apq8053-mtp.dtb \
+	apq8053-ext-audio-mtp.dtb \
+	apq8053-ext-codec-rcm.dtb \
+	msm8953-cdp-1200p.dtb \
+	msm8953-iot-mtp.dtb \
+	apq8053-iot-mtp.dtb \
+	apq8053-lite-dragon-v1.0.dtb \
+	apq8053-lite-dragon-v2.0.dtb \
+	apq8053-lite-dragon-v2.1.dtb \
+	apq8053-lite-dragon-v2.2.dtb \
+	apq8053-lite-dragon-v2.2.1.dtb \
+	apq8053-lite-dragon-v2.3.dtb \
+	apq8053-lite-dragon-v2.4.dtb \
+	apq8053-lat-concam-dev.dtb \
+	apq8053-lat-concam-proto.dtb \
+	msm8953-pmi8940-cdp.dtb \
+	msm8953-pmi8940-mtp.dtb \
+	msm8953-pmi8937-cdp.dtb \
+	msm8953-pmi8937-mtp.dtb \
+	msm8953-pmi8940-ext-codec-mtp.dtb \
+	msm8953-pmi8937-ext-codec-mtp.dtb \
+	msm8953-pmi632-cdp-s2.dtb \
+	apq8053-batcam.dtb
 
 dtb-$(CONFIG_ARCH_MSM8937) += msm8937-pmi8950-mtp.dtb \
 	msm8937-interposer-sdm439-cdp.dtb \
@@ -638,6 +680,7 @@ dtb-$(CONFIG_ARCH_SDM429) += sdm429-mtp.dtb \
 	sda429-spyro-dvt.dtb \
 	sdm429-bg-iot-wtp.dtb
 
+endif
 endif
 
 dtb-$(CONFIG_ARCH_SDM845_VM) += sdm845-vm.dtb
