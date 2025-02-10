@@ -1,7 +1,6 @@
 /*
 ** =============================================================================
 ** Copyright (c) 2016  Texas Instruments Inc.
-** Copyright (C) 2018 XiaoMi, Inc.
 **
 ** This program is free software; you can redistribute it and/or modify it under
 ** the terms of the GNU General Public License as published by the Free Software
@@ -26,8 +25,6 @@
 #include <linux/regmap.h>
 #include <linux/workqueue.h>
 #include <linux/timer.h>
-
-#define I2C_RESTART
 
 /* Page Control Register */
 #define TAS2557_PAGECTL_REG			0
@@ -131,7 +128,7 @@
 #define TAS2557_GPIO10_PIN_REG			TAS2557_REG(0, 1, 70)
 #define TAS2557_GPI_PIN_REG				TAS2557_REG(0, 1, 77)	/*B0_P1_R0x4d */
 #define TAS2557_GPIO_HIZ_CTRL1_REG		TAS2557_REG(0, 1, 79)
-#define TAS2557_GPIO_HIZ_CTRL2_REG		TAS2557_REG(0, 1, 80)
+#define TAS2557_GPIO_HIZ_CTRL2_REG		TAS2557_REG(0, 1, 80)	/*B0_P1_R0x50 */
 #define TAS2557_GPIO_HIZ_CTRL3_REG		TAS2557_REG(0, 1, 81)
 #define TAS2557_GPIO_HIZ_CTRL4_REG		TAS2557_REG(0, 1, 82)
 #define TAS2557_GPIO_HIZ_CTRL5_REG		TAS2557_REG(0, 1, 83)
@@ -176,8 +173,8 @@
 
 #define TAS2557_SA_PG1P0_CHL_CTRL_REG	TAS2557_REG(0, 58, 120)	/* B0_P0x3a_R0x78 */
 
-#define TAS2557_TEST_MODE_REG			TAS2557_REG(0, 253, 13)
-#define TAS2557_BROADCAST_REG			TAS2557_REG(0, 253, 54)
+#define TAS2557_TEST_MODE_REG			TAS2557_REG(0, 253, 13)	/* B0_P0xfd_R0x0d */
+#define TAS2557_BROADCAST_REG			TAS2557_REG(0, 253, 54)	/* B0_P0xfd_R0x36 */
 #define TAS2557_CRYPTIC_REG			TAS2557_REG(0, 253, 71)
 #define TAS2557_PG2P1_CALI_R0_REG		TAS2557_REG(0x8c, 0x2f, 0x40)
 #define TAS2557_PG1P0_CALI_R0_REG		TAS2557_REG(0x8c, 0x2f, 0x28)
@@ -320,6 +317,7 @@
 #define	ERROR_UNDER_VOLTAGE	0x00000800
 #define	ERROR_OVER_CURRENT	0x00001000
 #define	ERROR_CLASSD_PWR	0x00002000
+#define	ERROR_SAFE_GUARD	0x00004000
 #define	ERROR_FAILSAFE		0x40000000
 
 struct TBlock {
@@ -360,6 +358,8 @@ struct TConfiguration {
 	unsigned int mnProgram;
 	unsigned int mnPLL;
 	unsigned int mnSamplingRate;
+	unsigned char mnPLLSrc;
+	unsigned int mnPLLSrcRate;
 	struct TData mData;
 };
 
@@ -441,7 +441,7 @@ struct tas2557_priv {
 	int (*set_calibration)(struct tas2557_priv *pTAS2557,
 		int calibration);
 	void (*clearIRQ)(struct tas2557_priv *pTAS2557);
-	void (*enableIRQ)(struct tas2557_priv *pTAS2557, bool enable);
+	void (*enableIRQ)(struct tas2557_priv *pTAS2557, bool enable, bool startup_chk);
 	void (*hw_reset)(struct tas2557_priv *pTAS2557);
 	/* device is working, but system is suspended */
 	int (*runtime_suspend)(struct tas2557_priv *pTAS2557);
@@ -465,11 +465,14 @@ struct tas2557_priv {
 	bool mbRuntimeSuspend;
 
 	unsigned int mnErrCode;
+	unsigned int mnRestart;
 
 	/* for configurations with maximum TLimit 0x7fffffff,
 	 * bypass calibration update, usually used in factory test
 	*/
 	bool mbBypassTMax;
+
+	unsigned int mnEdge;
 
 #ifdef CONFIG_TAS2557_CODEC
 	struct mutex codec_lock;
@@ -481,9 +484,6 @@ struct tas2557_priv {
 	struct mutex file_lock;
 #endif
 
-#ifdef I2C_RESTART
-	int mnRestart;
-#endif
 };
 
 #endif /* _TAS2557_H */

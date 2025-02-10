@@ -10,7 +10,7 @@ ifeq ($(KERNEL_BUILD), 1)
 	# These are configurable via Kconfig for kernel-based builds
 	# Need to explicitly configure for Android-based builds
 	AUDIO_BLD_DIR := $(shell pwd)/kernel/msm-4.9
-	AUDIO_ROOT := $(AUDIO_BLD_DIR)/techpack/audio/titanium
+	AUDIO_ROOT := $(AUDIO_BLD_DIR)/techpack/audio
 endif
 
 ifeq ($(KERNEL_BUILD), 0)
@@ -24,7 +24,7 @@ ifeq ($(KERNEL_BUILD), 0)
 		export
 		INCS    +=  -include $(AUDIO_ROOT)/config/sdm710autoconf.h
 	endif
-	ifeq ($(CONFIG_ARCH_SDM450), y)
+	ifeq ($(CONFIG_ARCH_MSM8953), y)
 		include $(AUDIO_ROOT)/config/sdm450auto.conf
 		export
 		INCS    +=  -include $(AUDIO_ROOT)/config/sdm450autoconf.h
@@ -127,22 +127,9 @@ ifdef CONFIG_SND_SOC_WSA881X_ANALOG
 	WSA881X_ANALOG_OBJS += wsa881x-regmap-analog.o
 endif
 
-ifdef CONFIG_SND_SOC_MAX98927
-        MAX98927_OBJS += max98927.o
-endif
-
 ifdef CONFIG_SND_SOC_MSM_STUB
 	STUB_OBJS += msm_stub.o
 endif
-
-ifdef CONFIG_SND_SOC_TAS2557
-        TAS2557_OBJS += tas2557-core.o
-        TAS2557_OBJS += tas2557-misc.o
-        TAS2557_OBJS += tas2557-codec.o
-        TAS2557_OBJS += tas2557-regmap.o
-        TAS2557_OBJS += tiload.o
-endif
-
 ifdef CONFIG_SND_SOC_WCD_SPI
 	SPI_OBJS += wcd-spi.o
 endif
@@ -230,14 +217,8 @@ wsa881x_dlkm-y := $(WSA881X_OBJS)
 obj-$(CONFIG_SND_SOC_WSA881X_ANALOG) += wsa881x_analog_dlkm.o
 wsa881x_analog_dlkm-y := $(WSA881X_ANALOG_OBJS)
 
-obj-$(CONFIG_SND_SOC_MAX98927) += max98927_dlkm.o
-max98927_dlkm-y := $(MAX98927_OBJS)
-
 obj-$(CONFIG_SND_SOC_MSM_STUB) += stub_dlkm.o
 stub_dlkm-y := $(STUB_OBJS)
-
-obj-$(CONFIG_SND_SOC_TAS2557) += tas2557_dlkm.o
-tas2557_dlkm-y := $(TAS2557_OBJS)
 
 obj-$(CONFIG_SND_SOC_WCD_CPE) += wcd_cpe_dlkm.o
 wcd_cpe_dlkm-y := $(WCD_CPE_OBJS)
